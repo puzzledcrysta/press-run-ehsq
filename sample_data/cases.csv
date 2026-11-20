@@ -1,0 +1,8 @@
+case,上机纸张,刀版拼数,上机废纸,裁切废件,每包张数
+two_losses,1000,8,35,14,500
+all_setup,100,4,100,0,100
+whole_bundle,125,8,0,0,500
+tail,12,8,2,3,50
+too_much_setup,100,4,101,0,100
+too_much_die,10,4,4,25,100
+bad_bundle,100,4,0,0,0

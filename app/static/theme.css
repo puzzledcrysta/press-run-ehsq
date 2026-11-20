@@ -1,0 +1,16 @@
+/* 上机 · 拼版 */
+:root {
+  color-scheme: light;
+  --bg: #fff8f6; --rail: #fbe7e9; --accent: #a6283b; --ink: #3c2430;
+  --panel: color-mix(in srgb, var(--bg) 91%, white);
+  --line: color-mix(in srgb, var(--ink) 24%, var(--bg));
+  --mute: color-mix(in srgb, var(--ink) 78%, var(--bg));
+  --th: color-mix(in srgb, var(--panel) 84%, var(--accent));
+  --rail-ink: var(--ink);
+  --primary: #fff;
+  --bad: #832635;
+  --ui: Avenir Next, sans-serif; --mono: ui-monospace, Menlo, monospace;
+  --pad: 15px; --row: 34px; --gap: 10px;
+  --figure: 28px; --title: 36px; --graph: 66px;
+  --scroll: 315px;
+}
