@@ -25,6 +25,23 @@ function tag(code) {
   return el('span', settings.reasons[code] || code, code === 'MATCH' ? 'state' : 'state problem');
 }
 
+function proofLine(row) {
+  return row.note_proof ? [`备注凭据 SHA-256 · ${row.note_proof.sha256}`] : [];
+}
+
+function sourceFields(row) {
+  return evidence('来源字段', [...row.raw, ...proofLine(row)]);
+}
+
+function handoverState(state) {
+  const output = byId('handover-state');
+  const locked = state.cleared;
+  byId('handover-mode').disabled = locked;
+  byId('handover').querySelector('button').disabled = locked;
+  const mode = state.mode === 'withdraw' ? '撤回原文留凭据' : '保留受控证据并隔离';
+  output.value = locked ? `已交班清理 · ${mode} · ${state.notes} 条凭据` : '';
+}
+
 
 function showEvidence(row) {
   const panel = byId('evidence-panel');
@@ -63,7 +80,7 @@ function inspect(row) {
   const button = el('button', '查看依据', 'btn');
   button.type = 'button';
   button.addEventListener('click', () => showEvidence(row));
-  const raw = evidence('原始字段', row.raw);
+  const raw = evidence('原始字段', [...row.raw, ...proofLine(row)]);
   const cell = el('div');
   cell.append(button, raw);
   return cell;
@@ -88,13 +105,14 @@ async function render() {
   const stage = selected;
   byId('phase').textContent = settings.tabs[stage];
   byId('review').hidden = true;
+  byId('handover').hidden = true;
   for (const link of links) {
     if (link.dataset.module === stage) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
   if (!result) return;
   const id = result.manifest.run_id;
-  const raw = row => evidence('来源字段', row.raw);
+  const raw = sourceFields;
   const key = ['业务键', 'key'];
   const line = ['行号', 'line', 'num'];
   try {
@@ -146,12 +164,16 @@ async function render() {
       }]];
       rows = runs;
     } else {
-      const timeline = await query(`/api/review/${id}`);
+      const [timeline, handover] = await Promise.all([
+        query(`/api/review/${id}`), query(`/api/runs/${id}/handover`),
+      ]);
       view = [['版本','version','num'], ['结论','decision'], ['复核意见','note'], ['登记 UTC','changed']];
       rows = timeline;
       if (ticket === renderEpoch) {
         reviewVersion = timeline[0]?.version || 0;
         byId('review').hidden = false;
+        byId('handover').hidden = false;
+        handoverState(handover);
       }
     }
     if (ticket === renderEpoch) table(body, view, rows);
@@ -226,6 +248,16 @@ byId('review').addEventListener('submit', async event => {
     await query(`/api/review/${id}`, {version: reviewVersion, decision: byId('decision').value, note: note.value});
     notice('复核已登记');
     note.value = '';
+    await render();
+  } catch (error) { notice(error.message, true); }
+});
+byId('handover').addEventListener('submit', async event => {
+  event.preventDefault();
+  const id = result.manifest.run_id;
+  try {
+    handoverState(await query(`/api/runs/${id}/handover`, {mode: byId('handover-mode').value}));
+    setRun(await query(`/api/runs/${id}`));
+    notice('交班清理完成，工作台与导出不再含备注原文');
     await render();
   } catch (error) { notice(error.message, true); }
 });

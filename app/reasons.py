@@ -9,4 +9,7 @@ REASONS = {
     'AMOUNT_DELTA': '复算与外部账计量不同', 'BOOK_CONFLICT': '独立账含重复业务键',
     'RUN_UNKNOWN': '没有此批次', 'DEMO_UNKNOWN': '没有此样例', 'STALE': '复核版本已过期',
     'REVIEW_NOTE': '有差异时须填写复核意见', 'REVIEW_DECISION': '复核结论无效',
+    'HANDOVER_MODE': '清理方式无效', 'HANDOVER_CONFLICT': '原文已撤回，无法改为保留受控证据',
+    'HANDOVER_PENDING': '尚未交班清理', 'HANDOVER_WITHDRAWN': '原文已撤回，仅留可核对凭据',
+    'LINE_UNKNOWN': '没有此行号的记录',
 }

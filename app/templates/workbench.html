@@ -25,6 +25,14 @@
         <label>复核意见<textarea id="review-note" maxlength="500"></textarea></label>
         <div class="actions"><label>结论<select id="decision"><option>确认</option><option>退回</option></select></label>
         <button class="btn btn--primary" type="submit">提交复核</button></div>
+      </form>
+      <form id="handover" class="panel__body" hidden>
+        <div class="actions"><label>交班清理<select id="handover-mode">
+          <option value="withdraw">撤回原文留凭据</option>
+          <option value="retain">保留受控证据并隔离</option>
+        </select></label>
+        <button class="btn" type="submit">执行交班清理</button></div>
+        <output class="notice" id="handover-state" role="status" aria-live="polite"></output>
       </form></section>
 <section class="panel source" aria-labelledby="source-title"><div class="panel__head"><h2 id="source-title">批次输入</h2></div>
       <form id="source" class="panel__body"><div class="actions"><button type="submit" class="btn btn--primary">运行 {{ tabs.domain }}</button>

@@ -13,6 +13,15 @@ CREATE TABLE IF NOT EXISTS reviews (
   decision TEXT NOT NULL, note TEXT NOT NULL, changed TEXT NOT NULL,
   PRIMARY KEY(run_id,version)
 );
+CREATE TABLE IF NOT EXISTS handovers (
+  run_id TEXT NOT NULL REFERENCES runs(id), version INTEGER NOT NULL,
+  mode TEXT NOT NULL, notes INTEGER NOT NULL, changed TEXT NOT NULL,
+  PRIMARY KEY(run_id,version)
+);
+CREATE TABLE IF NOT EXISTS sealed_evidence (
+  run_id TEXT PRIMARY KEY REFERENCES runs(id),
+  source BLOB NOT NULL, sealed TEXT NOT NULL
+);
 """
 
 

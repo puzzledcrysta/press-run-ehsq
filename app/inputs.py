@@ -50,6 +50,15 @@ class Review(BaseModel):
     note: str = Field(default='',max_length=500)
 
 
+class Handover(BaseModel):
+    mode: Literal['withdraw','retain']
+
+
+class VerifyNote(BaseModel):
+    line: int = Field(ge=1)
+    note: str = Field(max_length=2000)
+
+
 def read_sample(name):
     choices = {'shift':'shift.csv','external':'external.csv'}
     if name not in choices:

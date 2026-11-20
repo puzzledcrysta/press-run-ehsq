@@ -15,6 +15,7 @@
 | M5 独立对账 | 核对外部记录并分别计量 | `POST /api/reconcile` | `app/modules/reconcile/service.py` | `tests/test_reconcile.py` |
 | M6 批次复算 | 保存运行、查询历史、复算原输入 | `POST /api/runs` | `app/modules/runs/service.py` | `tests/test_runs.py` |
 | M7 交付复核 | 复核差异、阻止陈旧提交、导出证据 | `GET /api/export` | `app/modules/review/decisions.py` | `tests/test_review.py` |
+| M8 交班清理 | 复核员决定撤回原文留凭据或保留受控证据并隔离 | `POST /api/runs/{id}/handover` | `app/modules/handover/service.py` | `tests/test_handover.py` |
 
 ## 陷阱登记
 
@@ -35,6 +36,16 @@
 
 输入记录数 = 计入 + 隔离 + 去重和替换 + 空白记录 + 重复表头。
 业务账按工单全外连接。差异分别标记漏记、外部单边和数值不符，以合格张对差。
+
+## 交班清理
+
+班次备注可能夹着客户名与配方片段。复核员在交付复核页选择清理方式，两种
+方式得到同一份可复核结论：备注单元格替换为 `‹已清理#摘要›`，记录附带
+`note_proof`（归一备注的 SHA-256 与长度），工作台、导出与来源回取都不再
+出现原文。撤回方式销毁原文；保留方式把原始来源封存于受控证据表，仅
+`POST /api/runs/{id}/handover/reveal` 可取回，`verify` 接口按行号核对凭据。
+清理在单事务内完成，失败回滚保留旧版结论；重跑与同方式重复提交都是幂等
+的，保留可升级为撤回，反向不允许。列数不齐的坏行无法定位备注列，原样保留。
 
 ## 范围
 
